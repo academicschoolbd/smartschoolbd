@@ -1,0 +1,621 @@
+/* Medium Layout: 1280px. */
+@media only screen and (min-width: 992px) and (max-width: 1200px) { 
+  
+    
+}
+/* Tablet Layout: 768px. */
+@media only screen and (min-width: 768px) and (max-width: 991px) { 
+
+.slide_image img {
+	height: 350px !important;
+}
+
+/* Menu css start */
+.stellarnav > ul > li > a {
+	padding: 5px 10px !important;
+	font-size: 16px !important;	
+} 
+    
+/* Menu css End */
+
+
+.about-title {
+	font-size: 18px !important;
+}
+
+.information-title1 {
+	font-size: 18px !important;
+}
+
+.information-title2 {
+	font-size: 18px !important;
+}
+
+.information-title3 {
+	font-size: 18px !important;
+}
+
+.information-title4 {
+	font-size: 18px !important;
+}
+
+.academic_information ul li a {
+	font-size: 14px !important;
+	padding: 5px !important;
+}
+
+.notic_board_title {
+	font-size: 17px !important;	
+}
+
+.oLink_litle {
+	font-size: 17px !important;
+}
+
+/* Information section start */
+.calender img {
+	width: 30% !important;
+}
+
+.info-date span {
+	left: 7px !important;
+	bottom: -2px !important;
+	font-size: 14px;
+}
+
+.info-date {
+	top: 4px !important;
+	font-size: 14px !important;
+}
+
+
+.view-d span {
+	font-size: 14px !important;
+	width: 20px !important;
+	height: 20px !important;
+	line-height: 20px !important;
+	right: 4px !important;
+}
+
+.viewDownload .view-d {
+	padding: 5px 23px 4px 4px !important;
+	margin: 0 !important;
+	font-size: 5px;
+}
+
+.viewDownload ul li a {
+	font-size: 13px !important;
+}
+
+.infoContent > a {
+	font-size: 16px !important;
+	margin: 4px 0 0 !important;
+}
+
+/* Information section End */
+
+.blog-active .blog-image img {
+	height: 200px !important;
+}
+
+.result-viewContent {
+	margin: 0 !important;
+}
+/* footer start */
+.footer-menu-title {
+	font-size: 17px !important;
+}
+
+.f-address-content {
+	margin-left: 22px !important;
+	margin-top: 6px !important;
+	font-size: 14px !important;
+}
+
+.design-developed {
+	font-size: 15px !important;
+}
+
+/* footer End */
+
+.teacher-social a {
+	margin-right: 0px !important;
+}
+    
+
+    
+ .single-page-image img {
+	width: 50% !important;
+}   
+    
+.single-page-details {
+	margin-left: 27% !important;
+}    
+    
+ .header-title {
+	margin: 10px 0 0 0 !important;
+}   
+
+.video-page-thumbnails img {
+	height: 150px !important;
+}
+
+.blog-wrpp {
+	padding: 8px !important;
+}
+
+.blog-title a {
+	font-size: 18px !important;
+}
+
+.blog-image img {
+	height: 120px !important;
+}
+    
+    
+    
+}
+
+/* Mobile Layout: 375px. */
+@media only screen and (max-width: 767px) { 
+/*================================
+	elitesDesign col css Start
+=================================*/
+
+.footer-section {
+	padding: 30px 10px;
+}
+
+.elitesDesign-m1{
+	max-width: 100%!important;
+}
+.elitesDesign-m2 {
+	max-width: 50% !important;
+	padding: 8px !important;
+}
+
+.elitesDesign-m3{
+	max-width: 33.33% !important;
+}
+
+.elitesDesign-m4{
+	max-width: 25% !important;
+}
+
+.elitesDesign-m6{
+	max-width: 16.66% !important;
+}
+
+
+/*================================
+	elitesDesign col css End
+=================================*/
+.header_content {
+	margin-top: 5px !important;
+}
+
+.header-title {
+	margin: 0 !important;
+}
+
+
+ .banner {
+	display: none !important;
+}
+    .logo {
+	display: none !important;
+}
+    
+    .mobile-logo {
+    display: inherit !important;
+    /* position: absolute !important; */
+    /* left: 4px !important; */
+    /* top: 3px !important; */
+    max-width: 100% !important;
+    z-index: 99 !important;
+}
+
+    
+    
+ /*============ Menu css start==============*/
+ .menu-section {
+	padding: 0 0 15px !important;
+}
+
+
+.stellarnav .menu-toggle span.bars {
+	top: 20px !important;
+	right: 38px !important;
+	position: absolute;
+	z-index: 999;
+}
+
+.stellarnav.mobile {
+	text-align: right !important;
+	margin-top: 15px !important;
+	margin-left: -14px !important;
+
+}
+.stellarnav.mobile.dark ul {
+	background: rgb(10, 27, 76) !important;
+	margin-top: 15px !important;
+	position: absolute;
+	left: 0 !important;
+	width: 100% !important;
+	z-index: 99 !important;
+}
+
+    
+.stellarnav .full {
+	width: 0 !important;
+}
+  
+.stellarnav.dark .menu-toggle span.bars span {
+	background: #000;
+}
+
+ .stellarnav.mobile li a {
+	color: #fff !important;
+}   
+
+
+	
+.stellarnav.dark {
+	background: transparent !important;
+}
+    
+.stellarnav .menu-toggle span.bars span {
+	width: 27px !important;
+	height: 3px !important;
+	margin: 0 0 5px !important;
+}
+        	
+.stellarnav.dark .menu-toggle span.bars span {
+	background: #fff;
+}
+
+.stellarnav ul ul {
+	left: 0 !important;
+	margin-top: 0 !important;
+}
+
+.stellarnav.mobile.dark ul ul {
+	margin-top: 10px !important;
+	z-index: 999999 !important;
+}
+
+.stellarnav.mobile.dark ul ul .dd-toggle{
+    z-index: 9999999 !important;
+}
+
+
+
+.searchIcon {
+	margin-top: 14px !important;
+}
+
+.searchBar.showSearch {
+	right: 9px !important;
+	top: 59px !important;
+}
+
+.searchBar {
+	max-width: 96% !important;
+	margin-top: -50px !important;
+}
+   
+    /*============ Menu css End==============*/
+    
+    
+ /*============ Slider Active css Start==============*/
+ .slide_image img {
+	height: 200px !important;
+}
+.slider-item {
+	left: 2% !important;
+	right: 2% !important;
+}
+.slider-title {
+	font-size: 20px !important;
+	font-weight: 400 !important;
+	margin-bottom: 6px !important;
+}
+
+ .slider-active button.owl-prev {
+	width: 40px !important;
+	height: 40px !important;
+	line-height: 0 !important;
+	font-size: 18px !important;
+}
+
+.slider-active button.owl-next {
+	width: 40px !important;
+	height: 40px !important;
+	line-height: 0 !important;
+	font-size: 18px !important;
+}
+
+ /*============ Slider Active css End==============*/
+    
+    
+    
+    
+ /*============ Scroll & About css Start==============*/
+    
+    
+.about_image img {
+	width: 100% !important;
+}
+    
+
+ /*============ Scroll & About css End==============*/
+    
+
+ .secTitle {
+	font-size: 40px !important;
+	margin-top: -8px !important;
+}
+
+/*information Section css start */
+.information-area {
+	margin: 20px 0 !important;
+	padding: 60px 0 !important;
+}
+
+#pills-tabContent {
+	margin: 79px 0 0 !important;
+}
+
+#information-tab > li {
+	margin-right: -3px !important;
+	font-size: 15px !important;
+	margin-bottom: 7px !important;
+}
+
+.info-date span {
+	left: 11px !important;
+	bottom: -3px !important;
+	font-size: 17px !important;
+}
+
+#information-tab .nav-link {
+	padding: 6px 17px 6px !important;
+}
+
+.info-date {
+	top: 12px !important;
+	font-size: 16px !important;
+}
+
+.infoContent i {
+	font-size: 22px !important;
+	margin-right: 0 !important;
+}
+
+.infoContent > a {
+	font-size: 16px !important;
+	margin: 5px 0 0 0 !important;
+}
+
+.calender img {
+	width: 13% !important;
+	margin-right: 3px !important;
+}
+
+.viewDownload {
+	float: inherit !important;
+
+}
+
+.viewDownload {
+	margin-top: 10px !important;
+	margin-bottom: 10px !important;
+}
+
+.viewDownload ul li {
+	margin-right: 10px !important;
+}
+.viewDownload .view-d {
+	margin: 0 !important;
+}
+
+
+
+/* information Section css End */
+
+
+ .teacher_image img {
+	height: 330px !important;	
+}   
+
+
+.blog-active .blog-image img {
+	height: 200px !important;
+}
+
+.blog-active .blog-wrpp {
+	margin-bottom: 10px !important;
+}
+
+    
+/*==========Footer section Start ===============*/
+
+.footer-menu-title {
+	font-size: 19px !important;
+}
+ 
+.f-address-content {
+	margin-left: 24px !important;
+}
+
+.copy-right {
+	text-align: center !important;
+}   
+    
+.design-developed {
+	text-align: center !important;
+}
+
+.design-developed a {
+	font-size: 17px !important;
+}
+
+/*==========Footer section End ===============*/
+    
+    
+/*==========Archive page css Start ===============*/
+.table thead tr th {
+	padding: 0 64px !important;
+}
+    
+.table.table-bordered td {
+	padding: 16px 0 0 0 !important;
+}
+
+.table.table-bordered tbody tr th {
+	padding: 16px 0 0 0 !important;
+}
+
+.image {
+	margin-top: -5px !important;
+}
+
+/*==========Archive page css End ===============*/
+.page-pagination ul > li > a {
+	padding: 4px 10px 4px !important;
+	margin-right: 2px !important;
+	font-size: 14px !important;
+	margin-bottom: 7px !important;
+}
+    
+    
+/*==========Single page css Start ===============*/
+.single-page {
+	padding: 30px 0 !important;
+}
+    
+.sinlge-title-item {
+	margin-left: 0 !important;
+	margin-right: 0 !important;
+}
+
+.single-page-image img {
+	width: 100% !important;
+}
+
+.single-page-details {
+	margin-left: 12px !important;
+}
+    
+    
+    
+/*==========Single page css End ===============*/
+    
+/* Video page Start*/
+.video-page-wrpp {
+	margin-bottom: 0 !important;
+}
+
+.video-page-thumbnails img {
+	height: 120px !important;
+}
+
+.video-caption > a {
+	font-size: 16px !important;
+}
+
+/* Video page End*/
+
+/* Blog Page start */
+.blog-wrpp {
+	margin-bottom: 0 !important;
+	padding: 5px !important;
+}
+.blog-image img {
+	height: 100px !important;
+}
+
+.blog-date > ul > li {
+	font-size: 13px !important;
+}
+
+.blog-title a {
+	font-size: 16px !important;
+}
+
+
+
+/* Blog Page End */
+    
+/* Regstion page */
+.result-content {
+	margin-left: 0 !important;
+	margin-right: 0 !important;
+}
+
+.elitesDesign input[type="text"] {
+	width: 61% !important;
+	font-size: 16px !important;
+}
+
+.elitesDesign input[type="submit"], button[type="submit"] {
+	font-size: 16px !important;
+}
+
+/* Regstion page */
+    
+.result-viewContent {
+	margin: 0 !important;
+}
+    
+    
+}
+
+/* Wide Mobile Layout: 480px. */
+@media only screen and (min-width: 480px) and (max-width: 767px) { 
+
+    
+.mobile-logo {
+	max-width: 40% !important;
+    top: 1px !important;
+}
+    
+.video-page-thumbnails img {
+	height: 140px !important;
+}  
+    
+.blog-image img {
+	height: 130px !important;
+}
+    
+.calender img {
+	width: 10% !important;
+}
+
+.teacher_image img {
+	height: 265px !important;
+}
+
+.course-wrpp {
+	padding: 7px !important;
+	margin: 3px !important;
+}
+
+.course-image img {
+	height: 120px !important;
+}
+.course-title a {
+	font-size: 18px !important;
+}
+
+.blog-active .blog-image img {
+	height: 120px !important;
+}
+
+.sec-title {
+	font-size: 25px !important;
+}
+
+
+    
+}
