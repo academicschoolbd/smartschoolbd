@@ -466,6 +466,302 @@ class Saas extends Admin_Controller
     }
 
     // -------------------------------------------------------------------------
+    // Bulk lifecycle actions on subscriptions
+    // POST `branch_ids[]` (one entry per selected row).
+    // -------------------------------------------------------------------------
+    public function bulk_suspend()
+    {
+        $this->require_post();
+        $ids = $this->_collect_int_ids('branch_ids');
+        $n   = 0;
+        foreach ($ids as $bid) {
+            if ($this->saas_model->setStatus($bid, 'suspended')) $n++;
+        }
+        $this->_log_bulk('tenant.bulk_suspend', $ids);
+        set_alert('success', sprintf('%d tenant(s) suspended.', $n));
+        redirect(base_url('saas/school'));
+    }
+
+    public function bulk_activate()
+    {
+        $this->require_post();
+        $ids = $this->_collect_int_ids('branch_ids');
+        $n   = 0;
+        foreach ($ids as $bid) {
+            if ($this->saas_model->setStatus($bid, 'active')) $n++;
+        }
+        $this->_log_bulk('tenant.bulk_activate', $ids);
+        set_alert('success', sprintf('%d tenant(s) re-activated.', $n));
+        redirect(base_url('saas/school'));
+    }
+
+    public function bulk_extend()
+    {
+        $this->require_post();
+        $ids  = $this->_collect_int_ids('branch_ids');
+        $days = (int)$this->input->post('days');
+        if ($days < 1) $days = 30;
+        $n = 0;
+        foreach ($ids as $bid) {
+            if ($this->saas_model->extendPeriod($bid, $days)) $n++;
+        }
+        $this->_log_bulk('tenant.bulk_extend', $ids, ['days' => $days]);
+        set_alert('success', sprintf('%d tenant(s) extended by %d days.', $n, $days));
+        redirect(base_url('saas/school'));
+    }
+
+    // -------------------------------------------------------------------------
+    // Bulk approve / reject pending signup requests.
+    // -------------------------------------------------------------------------
+    public function bulk_approve()
+    {
+        $this->require_post();
+        $ids = $this->_collect_int_ids('request_ids');
+        $ok  = 0;
+        $fail = 0;
+        foreach ($ids as $rid) {
+            try {
+                $this->_approve_one($rid);
+                $ok++;
+            } catch (\Throwable $e) {
+                $fail++;
+                log_message('error', 'bulk_approve failed for request ' . $rid . ': ' . $e->getMessage());
+            }
+        }
+        $msg = sprintf('%d request(s) approved', $ok);
+        if ($fail > 0) $msg .= sprintf(', %d failed (see PHP error log)', $fail);
+        $msg .= '.';
+        set_alert($fail === 0 ? 'success' : 'error', $msg);
+        redirect(base_url('saas/pending_request'));
+    }
+
+    public function bulk_reject()
+    {
+        $this->require_post();
+        $ids = $this->_collect_int_ids('request_ids');
+        $n   = 0;
+        foreach ($ids as $rid) {
+            $req = $this->saas_model->getPendingRequestById($rid);
+            if ($req && $req->status === 'pending') {
+                $this->saas_model->markRequestProcessed($rid, 'rejected');
+                $n++;
+            }
+        }
+        set_alert('success', sprintf('%d request(s) rejected.', $n));
+        redirect(base_url('saas/pending_request'));
+    }
+
+    /**
+     * Approve a single pending request. Refactored out of approve() so the
+     * bulk variant can reuse the exact same provisioning path. Throws on
+     * unexpected failure so the caller can count failures.
+     */
+    private function _approve_one($id)
+    {
+        $req = $this->saas_model->getPendingRequestById((int)$id);
+        if (!$req || $req->status !== 'pending') {
+            return false;
+        }
+
+        $branchData = [
+            'name'             => $req->school_name,
+            'school_name'      => $req->school_name_bn ?: $req->school_name,
+            'email'            => $req->owner_email,
+            'mobileno'         => $req->owner_phone,
+            'currency'         => 'BDT',
+            'symbol'           => '৳',
+            'city'             => '',
+            'state'            => '',
+            'address'          => '',
+            'translation'      => 'english',
+            'timezone'         => 'Asia/Dhaka',
+            'weekends'         => '1',
+            'reg_prefix_digit' => 4,
+            'status'           => 1,
+        ];
+        if ($this->db->field_exists('subdomain', 'branch')) {
+            $branchData['subdomain'] = $req->subdomain;
+        }
+        if ($this->db->field_exists('slug', 'branch')) {
+            $branchData['slug'] = $req->subdomain;
+        }
+        $this->db->insert('branch', $branchData);
+        $branchId = (int)$this->db->insert_id();
+
+        $slug      = preg_replace('/[^a-z0-9_-]/', '_', strtolower($req->subdomain ?: $req->school_name));
+        $overrides = [
+            'application_title' => $req->school_name,
+            'url_alias'         => $slug,
+            'email'             => $req->owner_email,
+            'mobile_no'         => $req->owner_phone,
+            'address'           => '',
+            'copyright_text'    => '© ' . date('Y') . ' ' . $req->school_name . ' — Powered by SmartSchool.bd',
+        ];
+        $this->load->model('tenant_provisioning_model');
+        $cloned = $this->tenant_provisioning_model->cloneFrontendForTenant($branchId, $overrides);
+        if (!$cloned) {
+            $this->db->insert('front_cms_setting', array_merge($overrides, [
+                'branch_id'            => $branchId,
+                'cms_active'           => 1,
+                'theme'                => 'red',
+                'captcha_status'       => 'disable',
+                'recaptcha_site_key'   => '',
+                'recaptcha_secret_key' => '',
+                'fav_icon'             => '',
+                'primary_color'        => '#2e7d32',
+            ]));
+        }
+
+        $this->db->insert('custom_domain', [
+            'school_id'   => $branchId,
+            'url'         => $req->subdomain . '.smartschool.bd',
+            'domain_type' => 'subdomain',
+            'status'      => 1,
+            'notes'       => 'Auto-created by Saas::bulk_approve()',
+        ]);
+
+        $this->saas_model->assignPackage($branchId, $req->package_id, 'trial');
+        $this->_provision_owner_login($branchId, $req);
+        $this->saas_model->markRequestProcessed((int)$id, 'approved', $branchId);
+
+        if ($this->db->table_exists('audit_log')) {
+            $this->db->insert('audit_log', [
+                'branch_id'   => $branchId,
+                'actor_id'    => (int)$this->session->userdata('loggedin_userid'),
+                'actor_role'  => (int)$this->session->userdata('loggedin_role_id'),
+                'action'      => 'tenant.approve',
+                'target_type' => 'branch',
+                'target_id'   => $branchId,
+                'meta'        => json_encode([
+                    'subdomain'   => $req->subdomain,
+                    'owner_email' => $req->owner_email,
+                    'package_id'  => (int)$req->package_id,
+                    'request_id'  => (int)$id,
+                    'via'         => 'bulk',
+                ]),
+                'ip'          => $this->input->ip_address(),
+                'user_agent'  => substr((string)$this->input->user_agent(), 0, 255),
+            ]);
+        }
+        return $branchId;
+    }
+
+    private function _collect_int_ids($field)
+    {
+        $raw = $this->input->post($field);
+        if (!is_array($raw)) $raw = [];
+        $ids = [];
+        foreach ($raw as $v) {
+            $i = (int)$v;
+            if ($i > 0) $ids[] = $i;
+        }
+        return array_values(array_unique($ids));
+    }
+
+    private function _log_bulk($action, array $ids, array $extraMeta = [])
+    {
+        if (!$this->db->table_exists('audit_log') || empty($ids)) return;
+        foreach ($ids as $bid) {
+            $this->db->insert('audit_log', [
+                'branch_id'   => (int)$bid,
+                'actor_id'    => (int)$this->session->userdata('loggedin_userid'),
+                'actor_role'  => (int)$this->session->userdata('loggedin_role_id'),
+                'action'      => $action,
+                'target_type' => 'branch',
+                'target_id'   => (int)$bid,
+                'meta'        => json_encode(array_merge(['via' => 'bulk'], $extraMeta)),
+                'ip'          => $this->input->ip_address(),
+                'user_agent'  => substr((string)$this->input->user_agent(), 0, 255),
+            ]);
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Tenant detail page — single-pane view of one branch.
+    // -------------------------------------------------------------------------
+    public function tenant($branchId = 0)
+    {
+        $branchId = (int)$branchId;
+        $branch   = $this->db->where('id', $branchId)->get('branch')->row();
+        if (!$branch) {
+            set_alert('error', translate('not_found'));
+            redirect(base_url('saas/school'));
+        }
+        $this->load->model('custom_domain_model');
+
+        $this->data['title']         = translate('tenant_detail');
+        $this->data['main_menu']     = 'saas';
+        $this->data['sub_page']      = 'saas/tenant';
+        $this->data['branch']        = $branch;
+        $this->data['subscription']  = $this->saas_model->getSubscriptionByBranch($branchId);
+        $this->data['packages']      = $this->saas_model->getPackages(true);
+        $this->data['invoices']      = $this->saas_model->getInvoicesForBranch($branchId);
+        $this->data['payments']      = $this->saas_model->getPaymentsForBranch($branchId);
+        $this->data['custom_domains']= $this->custom_domain_model->getByBranch($branchId);
+        $this->data['audit_log']     = $this->saas_model->getAuditLogForBranch($branchId, 100);
+        $this->load->view('layout/index', $this->data);
+    }
+
+    // -------------------------------------------------------------------------
+    // CSV export — server-side, includes all rows regardless of view filters.
+    // -------------------------------------------------------------------------
+    public function export_subscriptions()
+    {
+        $rows = $this->saas_model->getSubscriptions();
+        $this->_send_csv('subscriptions_' . date('Ymd_His') . '.csv',
+            ['Branch', 'Subdomain', 'Plan', 'Price (BDT)', 'Status', 'Trial ends', 'Period start', 'Period end', 'Expires'],
+            array_map(function ($r) {
+                return [
+                    $r->branch_name,
+                    $r->subdomain,
+                    $r->package_name,
+                    $r->price_bdt,
+                    $r->status,
+                    $r->trial_ends_at,
+                    $r->current_period_start,
+                    $r->current_period_end,
+                    $r->expire_date,
+                ];
+            }, $rows)
+        );
+    }
+
+    public function export_transactions()
+    {
+        $rows = $this->saas_model->getAllPayments();
+        $this->_send_csv('transactions_' . date('Ymd_His') . '.csv',
+            ['Invoice', 'Branch', 'Subdomain', 'Amount', 'Currency', 'Provider', 'Provider txn id', 'Status', 'Paid at'],
+            array_map(function ($r) {
+                return [
+                    $r->invoice_no,
+                    $r->branch_name,
+                    $r->subdomain,
+                    $r->amount,
+                    $r->currency,
+                    $r->provider,
+                    $r->provider_txn_id,
+                    $r->status,
+                    $r->paid_at,
+                ];
+            }, $rows)
+        );
+    }
+
+    private function _send_csv($filename, array $header, array $rows)
+    {
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Cache-Control: no-store, no-cache');
+        $out = fopen('php://output', 'w');
+        // UTF-8 BOM so Excel renders Bangla correctly.
+        fwrite($out, "\xEF\xBB\xBF");
+        fputcsv($out, $header);
+        foreach ($rows as $row) fputcsv($out, $row);
+        fclose($out);
+        exit;
+    }
+
+    // -------------------------------------------------------------------------
     // Transactions
     // -------------------------------------------------------------------------
     public function transactions()
