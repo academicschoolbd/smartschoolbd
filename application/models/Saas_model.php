@@ -257,6 +257,28 @@ class Saas_model extends CI_Model
     }
 
     // -------------------------------------------------------------------------
+    // Audit log
+    // -------------------------------------------------------------------------
+    /**
+     * Recent audit_log rows for a single branch, newest first. Returns []
+     * when the audit_log table does not exist yet (the 008 migration has
+     * not been applied on this install).
+     */
+    public function getAuditLogForBranch($branchId, $limit = 100)
+    {
+        if (!$this->db->table_exists('audit_log')) return [];
+        $branchId = (int)$branchId;
+        $limit    = max(1, (int)$limit);
+        $this->db->select('al.*, lc.username AS actor_username');
+        $this->db->from('audit_log al');
+        $this->db->join('login_credential lc', 'lc.user_id = al.actor_id', 'left');
+        $this->db->where('al.branch_id', $branchId);
+        $this->db->order_by('al.id', 'desc');
+        $this->db->limit($limit);
+        return $this->db->get()->result();
+    }
+
+    // -------------------------------------------------------------------------
     // Usage stats per branch (for the dashboard widget)
     // -------------------------------------------------------------------------
     public function getUsageStats($branchId)
