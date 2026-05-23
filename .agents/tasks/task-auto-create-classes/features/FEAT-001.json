@@ -1,0 +1,25 @@
+{
+  "id": "FEAT-001",
+  "type": "feat",
+  "description": "Add auto_create_classes() method to the Classes controller and a trigger button in the classes index view, allowing super admin to auto-create Class 1-12 for all branches with default section allocation.",
+  "status": "completed",
+  "steps": [
+    "In application/controllers/Classes.php, add a new public method auto_create_classes() after the existing index() method. The method should: (a) check is_superadmin_loggedin() and call access_denied() if not; (b) get all branches from the 'branch' table using $this->db->get('branch')->result(); (c) initialize a counter for classes created; (d) for each branch, loop from 1 to 12 and for each number: check if a class with that name_numeric and branch_id already exists in the 'class' table - if not, insert a new row with name='Class N', name_numeric=N, branch_id=branch->id; (e) for each newly created class, find the first available section for that branch from the 'section' table (SELECT id FROM section WHERE branch_id = X LIMIT 1), and if a section exists, insert into sections_allocation (class_id, section_id) only if the allocation does not already exist; (f) increment the counter for each new class created; (g) after the loop, call set_alert('success', 'Total ' . $count . ' classes have been created successfully across all branches.'); (h) redirect to base_url('classes').",
+    "In application/views/classes/index.php, add a button visible only to super admin. Place it inside the panel-heading of the class_list section (the right column panel with header 'class_list'). Wrap it in <?php if (is_superadmin_loggedin()): ?> ... <?php endif; ?>. The button should be an anchor tag styled as 'btn btn-success btn-sm pull-right' with an icon (fas fa-magic) and text 'Auto Create Classes (1-12) for All Branches'. The href should point to base_url('classes/auto_create_classes'). Add an onclick handler: onclick=\"return confirm('Are you sure? This will create Class 1 to Class 12 for ALL branches in the system. Existing classes will not be duplicated.');\" to show a JS confirmation dialog."
+  ],
+  "acceptance_criteria": [
+    "The auto_create_classes() method exists in Classes.php and is only accessible to super admin",
+    "The method queries all branches and creates Class 1-12 for each branch that does not already have them",
+    "The method allocates the first available section for each newly created class",
+    "A success flash message is set with the count of classes created",
+    "The view shows the button only when is_superadmin_loggedin() returns true",
+    "The button has a JavaScript confirm dialog before navigating",
+    "PHP syntax is valid for both modified files"
+  ],
+  "verification": [
+    "Run php -l application/controllers/Classes.php to verify no syntax errors",
+    "Run php -l application/views/classes/index.php to verify no syntax errors"
+  ],
+  "blocked_reason": null,
+  "findings": "Both files pass php -l syntax check. Implementation follows existing patterns in the controller (permission checks, DB queries, flash messages, redirects). Review feedback addressed: (1) Changed GET link to POST form with form_open() for CSRF protection, (2) Added trans_start/trans_complete for atomic bulk insert, (3) Added order_by('id','asc') for deterministic section selection, (4) Replaced hardcoded English message with translate() calls."
+}

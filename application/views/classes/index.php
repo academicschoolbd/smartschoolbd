@@ -73,6 +73,13 @@
 						<section class="panel panel-custom">
 							<header class="panel-heading panel-heading-custom">
 								<h4 class="panel-title"><i class="fas fa-list-ul"></i> <?=translate('class_list')?></h4>
+								<?php if (is_superadmin_loggedin()): ?>
+									<?php echo form_open('classes/auto_create_classes', array('style' => 'display:inline; margin-top:-25px;', 'class' => 'pull-right')); ?>
+										<button type="submit" class="btn btn-success btn-sm" onclick="return confirm('<?=translate('auto_create_classes_confirm')?>');">
+											<i class="fas fa-magic"></i> <?=translate('auto_create_classes_btn')?>
+										</button>
+									<?php echo form_close(); ?>
+								<?php endif; ?>
 							</header>
 							<div class="panel-body panel-body-custom">
 								<div class="table-responsive">
