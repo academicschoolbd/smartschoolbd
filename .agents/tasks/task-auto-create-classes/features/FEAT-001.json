@@ -21,5 +21,5 @@
     "Run php -l application/views/classes/index.php to verify no syntax errors"
   ],
   "blocked_reason": null,
-  "findings": "Both files pass php -l syntax check. Implementation follows existing patterns in the controller (permission checks, DB queries, flash messages, redirects)."
+  "findings": "Both files pass php -l syntax check. Implementation follows existing patterns in the controller (permission checks, DB queries, flash messages, redirects). Review feedback addressed: (1) Changed GET link to POST form with form_open() for CSRF protection, (2) Added trans_start/trans_complete for atomic bulk insert, (3) Added order_by('id','asc') for deterministic section selection, (4) Replaced hardcoded English message with translate() calls."
 }
