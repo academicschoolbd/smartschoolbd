@@ -236,4 +236,33 @@ class Classes extends Admin_Controller
             }
         }
     }
+
+    public function auto_create_classes()
+    {
+        if (!is_superadmin_loggedin()) {
+            access_denied();
+            return;
+        }
+        $branches = $this->db->get('branch')->result();
+        $count = 0;
+        foreach ($branches as $branch) {
+            for ($i = 1; $i <= 12; $i++) {
+                $exists = $this->db->get_where('class', array('name_numeric' => $i, 'branch_id' => $branch->id))->num_rows();
+                if ($exists == 0) {
+                    $this->db->insert('class', array('name' => 'Class ' . $i, 'name_numeric' => $i, 'branch_id' => $branch->id));
+                    $class_id = $this->db->insert_id();
+                    $section = $this->db->where('branch_id', $branch->id)->limit(1)->get('section')->row();
+                    if ($section) {
+                        $allocationExists = $this->db->get_where('sections_allocation', array('class_id' => $class_id, 'section_id' => $section->id))->num_rows();
+                        if ($allocationExists == 0) {
+                            $this->db->insert('sections_allocation', array('class_id' => $class_id, 'section_id' => $section->id));
+                        }
+                    }
+                    $count++;
+                }
+            }
+        }
+        set_alert('success', 'Total ' . $count . ' classes have been created successfully across all branches.');
+        redirect(base_url('classes'));
+    }
 }

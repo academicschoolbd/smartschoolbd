@@ -1,0 +1,22 @@
+{
+  "project_type": "CodeIgniter 3 PHP web application (School Management System)",
+  "language": "PHP",
+  "build_system": "No build system - standard PHP application served by web server",
+  "test_framework": "No automated test framework found",
+  "build_command": null,
+  "test_command": null,
+  "verification_instructions": "Verify PHP syntax with php -l on modified files. Verify the logic is correct by reading through the code.",
+  "snapshot_or_generated_files": null,
+  "setup_instructions": "No setup required - plain PHP CodeIgniter app",
+  "environment_constraints": "No database available for runtime testing. Validation is limited to PHP syntax checks and code review.",
+  "contribution_requirements": "Follow existing CodeIgniter 3 patterns: controllers extend Admin_Controller, use $this->db for queries, set_alert() for flash messages, translate() for i18n strings, redirect() for navigation.",
+  "key_patterns": "Controllers extend Admin_Controller. Permission checks use is_superadmin_loggedin() and get_permission(). Flash messages use set_alert('success', 'message'). Redirects use redirect(base_url('route')). DB queries use CodeIgniter Query Builder ($this->db). Views use translate() for all labels. Forms use form_open/form_close helpers.",
+  "relevant_files": [
+    "application/controllers/Classes.php",
+    "application/models/Classes_model.php",
+    "application/views/classes/index.php",
+    "application/core/MY_Controller.php",
+    "application/helpers/general_helper.php"
+  ],
+  "directory_structure": "application/controllers/ - all controllers; application/models/ - all models; application/views/ - views organized by feature folders; application/helpers/ - helper functions; application/core/ - base controllers (MY_Controller, Admin_Controller)"
+}

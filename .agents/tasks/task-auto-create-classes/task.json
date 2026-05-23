@@ -1,0 +1,7 @@
+{
+  "task_id": "task-auto-create-classes",
+  "task_description": "Add a feature to automatically create Class 1 through Class 12 for all branches in the system, with duplicate checking and default section allocation. Accessible only to super admin via a button in the classes management view.",
+  "status": "in_progress",
+  "feature_order": ["FEAT-001"],
+  "blocked_reason": null
+}

@@ -73,6 +73,11 @@
 						<section class="panel panel-custom">
 							<header class="panel-heading panel-heading-custom">
 								<h4 class="panel-title"><i class="fas fa-list-ul"></i> <?=translate('class_list')?></h4>
+								<?php if (is_superadmin_loggedin()): ?>
+									<a href="<?=base_url('classes/auto_create_classes')?>" class="btn btn-success btn-sm pull-right" style="margin-top:-25px;" onclick="return confirm('Are you sure? This will create Class 1 to Class 12 for ALL branches in the system. Existing classes will not be duplicated.');">
+										<i class="fas fa-magic"></i> Auto Create Classes (1-12) for All Branches
+									</a>
+								<?php endif; ?>
 							</header>
 							<div class="panel-body panel-body-custom">
 								<div class="table-responsive">
