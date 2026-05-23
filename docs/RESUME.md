@@ -4,13 +4,15 @@ Last updated: **2026-05-20**
 
 This document is the "fast on-ramp" for any new Devin session (or human) continuing this work. Read this first. The deep architecture/phase plan lives in [`docs/PROJECT_DRAFT.md`](PROJECT_DRAFT.md) — read it second.
 
+For a code-scan view of what is actually checked in at `HEAD` (controllers, models, libraries, routes, third-party deps, security findings), see [`docs/README.md`](README.md) which links the full set of code-scan docs ([`ARCHITECTURE.md`](ARCHITECTURE.md), [`CODE_MAP.md`](CODE_MAP.md), [`ROUTES.md`](ROUTES.md), [`CONFIGURATION.md`](CONFIGURATION.md), [`THIRD_PARTY.md`](THIRD_PARTY.md), [`SAAS.md`](SAAS.md), [`SETUP.md`](SETUP.md), [`SECURITY.md`](SECURITY.md)). Use those when the strategic plan and the current code disagree.
+
 ---
 
 ## 0. One-paragraph recap
 
 SmartSchool.bd is a multi-tenant SaaS overlay on **Ramom School Management System v6.8** (CodeIgniter 3.1.13, PHP 8.2/8.3, MariaDB 11.4). Multi-tenancy uses **shared DB + `branch_id` column** isolation. Each tenant gets a subdomain (`<slug>.smartschool.bd`) and optionally a custom domain (rows in `custom_domain`). Self-service signup lives in `saas_pending_request`; super-admin approval auto-provisions a branch, custom_domain, subscription, and audit_log row.
 
-The code+docs were pushed to GitHub on 2026-05-20 at commit `f12a8a0`. Repo: https://github.com/academicschoolbd/smartschool
+Repo: https://github.com/academicschoolbd/smartschoolbd (default branch `main`). The full codebase + docs were pushed via [PR #1](https://github.com/academicschoolbd/smartschoolbd/pull/1) on 2026-05-23.
 
 ---
 
@@ -41,7 +43,7 @@ The code+docs were pushed to GitHub on 2026-05-20 at commit `f12a8a0`. Repo: htt
 - Landing-page configuration (P9) — `landing_setting` row seeded (`pricing_mode='free'`, EN+BN copy, `#1f9d55` green); the actual landing view file is still TBD.
 - Audit log live for tenant approval events.
 - Tenants live: id=1 (Fakel/apex), id=4 (NGPS), id=5 (`devine2e`), id=6 (`devine2eb`).
-- Repo on GitHub at https://github.com/academicschoolbd/smartschool (main).
+- Repo on GitHub at https://github.com/academicschoolbd/smartschoolbd (main).
 
 ### In progress (this PR)
 **Branch:** `fix/p1-closer` — three small fixes that close out Phase 1:
@@ -72,8 +74,8 @@ Detailed per-phase status: [`docs/PROJECT_DRAFT.md` §3](PROJECT_DRAFT.md).
 ```bash
 # 1. Clone
 cd /home/ubuntu && mkdir -p repos && cd repos
-git clone https://github.com/academicschoolbd/smartschool.git
-cd smartschool
+git clone https://github.com/academicschoolbd/smartschoolbd.git
+cd smartschoolbd
 
 # 2. Read the project state
 cat docs/RESUME.md         # <-- this file
@@ -104,7 +106,7 @@ gh pr create --base main --title "..." --body "..."
 
 The `GITHUB_PAT` secret is saved at user scope; future sessions will have it available automatically as `${GITHUB_PAT}`. If push gets blocked by the Devin proxy, use a credentialed remote URL:
 ```bash
-git remote set-url origin "https://x-access-token:${GITHUB_PAT}@github.com/academicschoolbd/smartschool.git"
+git remote set-url origin "https://x-access-token:${GITHUB_PAT}@github.com/academicschoolbd/smartschoolbd.git"
 ```
 
 ---
